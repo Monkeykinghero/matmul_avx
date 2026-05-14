@@ -1,0 +1,12 @@
+# 编译产物
+*.exe
+*.o
+*.obj
+
+# 测试输出
+results/
+*.txt
+
+# Windows 系统文件
+Thumbs.db
+Desktop.ini
