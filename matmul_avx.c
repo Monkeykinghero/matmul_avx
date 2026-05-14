@@ -16,12 +16,12 @@
 
 /* ======================== 配置 ======================== */
 
-#ifndef N
-#define N 512         /* 矩阵维度: N x N */
+#ifndef MATN
+#define MATN 512       /* 矩阵维度: MATN x MATN */
 #endif
 
-#ifndef TILE
-#define TILE 64       /* 分块大小 */
+#ifndef MAT_TILE
+#define MAT_TILE 64    /* 分块大小 */
 #endif
 
 #ifndef WARMUP
@@ -237,7 +237,7 @@ static double run_bench(const float *A, const float *B, float *C,
     for (t = 0; t < WARMUP; t++) {
         clear_matrix(C, n);
         if (entry->use_tile)
-            matmul_v5_combined(A, B, C, n, TILE);
+            matmul_v5_combined(A, B, C, n, MAT_TILE);
         else
             entry->func(A, B, C, n);
     }
@@ -248,7 +248,7 @@ static double run_bench(const float *A, const float *B, float *C,
     for (t = 0; t < ITERS; t++) {
         clear_matrix(C, n);
         if (entry->use_tile)
-            matmul_v5_combined(A, B, C, n, TILE);
+            matmul_v5_combined(A, B, C, n, MAT_TILE);
         else
             entry->func(A, B, C, n);
     }
@@ -262,7 +262,7 @@ static double run_bench(const float *A, const float *B, float *C,
 int main(void)
 {
     float *A, *B, *C_naive, *C_opt;
-    int n = N;
+    int n = MATN;
     int i;
 
     printf("========================================\n");
@@ -295,12 +295,12 @@ int main(void)
     if (verify(C_naive, C_opt, n) != 0) goto fail;
 
     /* ---------- v3: 分块 ---------- */
-    printf("[v3] 分块 tiling (tile=%d) ...\n", TILE);
+    printf("[v3] 分块 tiling (tile=%d) ...\n", MAT_TILE);
     clear_matrix(C_opt, n);
     double t3_start = now_sec();
     for (i = 0; i < ITERS; i++) {
         clear_matrix(C_opt, n);
-        matmul_v3_tiling(A, B, C_opt, n, TILE);
+        matmul_v3_tiling(A, B, C_opt, n, MAT_TILE);
     }
     double t3 = (now_sec() - t3_start) / ITERS;
     printf("  耗时: %.4f sec  GFLOPS: %.2f", t3, gflops(t3, n));
@@ -330,7 +330,7 @@ int main(void)
 
     /* ---------- 汇总 ---------- */
     printf("========================================\n");
-    printf("  汇总 (N=%d, tile=%d)\n", n, TILE);
+    printf("  汇总 (N=%d, tile=%d)\n", n, MAT_TILE);
     printf("========================================\n");
     printf("  v1 朴素          : %7.2f GFLOPS  1.00x (基准)\n",   gflops(t1, n));
     printf("  v2 循环重排      : %7.2f GFLOPS  %.2fx\n",          gflops(t2, n), t1/t2);

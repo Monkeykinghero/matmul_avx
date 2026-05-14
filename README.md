@@ -30,7 +30,7 @@ make clean
 make run
 
 # 自定义矩阵大小和分块
-make N=1024 TILE=128 run
+make MATN=1024 MAT_TILE=128 run
 
 # 仅编译
 make
@@ -54,28 +54,28 @@ gcc -mavx -mfma -dM -E - < /dev/null | grep -i avx
 ========================================
 
 [v1] 朴素三重循环 i-j-k ...
-  耗时: 2.1534 sec  GFLOPS: 0.12
+  耗时: 0.1158 sec  GFLOPS: 2.32
 
 [v2] 循环重排 i-k-j ...
-  耗时: 0.4521 sec  GFLOPS: 0.59  加速比: 4.76x
+  耗时: 0.0478 sec  GFLOPS: 5.61  加速比: 2.42x
 
 [v3] 分块 tiling (tile=64) ...
-  耗时: 0.1805 sec  GFLOPS: 1.49  加速比: 11.93x
+  耗时: 0.0608 sec  GFLOPS: 4.41  加速比: 1.90x
 
 [v4] AVX 向量化 (8 flops/cycle) ...
-  耗时: 0.0689 sec  GFLOPS: 3.89  加速比: 31.25x
+  耗时: 0.0070 sec  GFLOPS: 38.23  加速比: 16.49x
 
 [v5] AVX + Tiling 组合 ...
-  耗时: 0.0467 sec  GFLOPS: 5.74  加速比: 46.11x
+  耗时: 0.0101 sec  GFLOPS: 26.51  加速比: 11.44x
 
 ========================================
   汇总 (N=512, tile=64)
 ========================================
-  v1 朴素          :    0.12 GFLOPS  1.00x (基准)
-  v2 循环重排      :    0.59 GFLOPS  4.76x
-  v3 分块          :    1.49 GFLOPS  11.93x
-  v4 AVX           :    3.89 GFLOPS  31.25x
-  v5 AVX+Tiling    :    5.74 GFLOPS  46.11x
+  v1 朴素          :    2.32 GFLOPS  1.00x (基准)
+  v2 循环重排      :    5.61 GFLOPS  2.42x
+  v3 分块          :    4.41 GFLOPS  1.90x
+  v4 AVX           :   38.23 GFLOPS  16.49x
+  v5 AVX+Tiling    :   26.51 GFLOPS  11.44x
 ========================================
   所有版本计算结果已验证正确 ✓
 ```

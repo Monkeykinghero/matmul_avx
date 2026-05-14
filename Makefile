@@ -1,15 +1,15 @@
-CC       = gcc
+CC       = D:\MinGW\bin\gcc
 CFLAGS   = -O2 -mavx -mfma -march=native -Wall -Wextra
 LDFLAGS  =
 TARGET   = matmul_avx.exe
 SRC      = matmul_avx.c
 
-# 允许覆盖 N 和 TILE: make N=1024 TILE=128
-N    ?= 512
-TILE ?= 64
+# 允许覆盖 MATN 和 MAT_TILE: make MATN=1024 MAT_TILE=128
+MATN    ?= 512
+MAT_TILE ?= 64
 
 $(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -DN=$(N) -DTILE=$(TILE) -o $(TARGET) $(SRC) $(LDFLAGS)
+	$(CC) $(CFLAGS) -DMATN=$(MATN) -DMAT_TILE=$(MAT_TILE) -o $(TARGET) $(SRC) $(LDFLAGS)
 
 .PHONY: clean run
 
